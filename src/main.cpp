@@ -1,23 +1,71 @@
 #include <Arduino.h>
 #include <stdio.h>
 #include <string.h>
+#include "esp_spiffs.h"
 #include <nvs.h>
 #include "nvs_flash.h"
 
 
-int32_t acessVal_NVS();
-void writeVal_NVS(int32_t valor);
+#define TAG "SPIFFS"
 
+
+esp_vfs_spiffs_conf_t spiffs_config = {
+  .base_path = "/spiffs",
+  .partition_label = NULL,
+  .max_files = 10,
+  .format_if_mount_failed = true,
+};
 
 
 
 void setup() 
 {
 
-  Serial.begin(9600);
+  Serial.begin(115200);
 
+  esp_vfs_spiffs_register(&spiffs_config);
+
+  FILE *arquivo1 = fopen("/spiffs/arquivo2.txt","r");
   
+  if(arquivo1 == NULL)
+  {
+    Serial.printf("%s : Não foi possível ler o arquivo.", TAG);
+  }
+
+  else
+  {
+    char linha[256];
+    while(fgets(linha, sizeof(linha), arquivo1) != NULL)
+    {
+      Serial.printf("%s \n", linha);
+
+    }
+    fclose(arquivo1);
+
+  }
+
+
 }
+
+void loop()
+{
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+/*
+
 
 void loop() 
 {
@@ -36,6 +84,15 @@ void loop()
   delay(10000);
 
 }
+
+
+
+
+*/
+
+
+int32_t acessVal_NVS();
+void writeVal_NVS(int32_t valor);
 
 
 
